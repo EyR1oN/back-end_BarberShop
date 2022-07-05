@@ -23,9 +23,11 @@ namespace Barber.Models
         public string name { get; set; }
         public string surname { get; set; }
 
+        public Status Status { get; set; }
+        [ForeignKey("Status")]
+
+
         [Required]
         public int statusId { get; set; }
-        [ForeignKey("statusId")]
-        public Status Status { get; set; }
     }
 }

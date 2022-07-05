@@ -21,17 +21,18 @@ namespace Barber.Models
         public string description { get; set; }
 
         [Required]
-        public IFormFile picture { get; set; }
+        public byte[] picture { get; set; }
 
         [Required]
         public int price { get; set; }
 
         [Required]
         public DateTime timeToMake { get; set; }
+        
+        public Category Category { get; set; }
+        [ForeignKey("Category")]
 
         [Required]
         public int categoryId { get; set; }
-        [ForeignKey("categoryId")]
-        public Category Category { get; set; }
     }
 }

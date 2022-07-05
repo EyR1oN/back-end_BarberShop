@@ -21,7 +21,7 @@ namespace Barber.Models
 
         [Required]
 
-        public IFormFile picture { get; set; }
+        public byte[] picture { get; set; }
 
 
     }
