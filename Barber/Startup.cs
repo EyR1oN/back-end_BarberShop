@@ -26,14 +26,16 @@ namespace Barber
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            
+
+              services.AddControllers();
 
             services.AddCors(c =>
             {
                 c.AddPolicy("AllowOrigin", option => option.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             });
 
-            object p = services.AddControllersWithViews().AddNewtonsoftJson(option =>
+            services.AddControllersWithViews().AddNewtonsoftJson(option =>
             option.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore)
                 .AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
         }
