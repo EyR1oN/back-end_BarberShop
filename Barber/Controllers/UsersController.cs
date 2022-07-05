@@ -1,160 +1,158 @@
-﻿using System;
+﻿using Barber.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Barber.Data;
-using Barber.Models;
 
 namespace Barber.Controllers
 {
-    public class UsersController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class UserController : ControllerBase
     {
-        private readonly DataBaseContext _context;
+        private readonly IConfiguration _configuration;
 
-        public UsersController(DataBaseContext context)
+        public UserController(IConfiguration configuration)
         {
-            _context = context;
+            _configuration = configuration;
         }
 
-        // GET: Users
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        public JsonResult Get()
         {
-            var dataBaseContext = _context.user.Include(u => u.Status);
-            return View(await dataBaseContext.ToListAsync());
-        }
+            string query = @"
+                select * from user
+            ";
 
-        // GET: Users/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("OrdersAppCon");
+            MySqlDataReader myReader;
+            using (MySqlConnection mycon = new MySqlConnection(sqlDataSource))
             {
-                return NotFound();
-            }
-
-            var user = await _context.user
-                .Include(u => u.Status)
-                .FirstOrDefaultAsync(m => m.id == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return View(user);
-        }
-
-        // GET: Users/Create
-        public IActionResult Create()
-        {
-            ViewData["statusId"] = new SelectList(_context.status, "id", "statusName");
-            return View();
-        }
-
-        // POST: Users/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,username,password,email,name,surname,statusId")] User user)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(user);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["statusId"] = new SelectList(_context.status, "id", "statusName", user.statusId);
-            return View(user);
-        }
-
-        // GET: Users/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.user.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            ViewData["statusId"] = new SelectList(_context.status, "id", "statusName", user.statusId);
-            return View(user);
-        }
-
-        // POST: Users/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,username,password,email,name,surname,statusId")] User user)
-        {
-            if (id != user.id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                mycon.Open();
+                using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
                 {
-                    _context.Update(user);
-                    await _context.SaveChangesAsync();
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+
+                    myReader.Close();
+                    mycon.Close();
+                    //  table.Clear();
                 }
-                catch (DbUpdateConcurrencyException)
+            }
+
+            return new JsonResult(table);
+        }
+
+        [HttpPost]
+        public JsonResult Post(User user)
+        {
+            string query = @"
+                        insert into user (username, password, email, statusId) values
+                                                    (@username, @password, @email, @statusId);
+                        
+            ";
+
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("OrdersAppCon");
+            MySqlDataReader myReader;
+            using (MySqlConnection mycon = new MySqlConnection(sqlDataSource))
+            {
+                mycon.Open();
+                using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
                 {
-                    if (!UserExists(user.id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    myCommand.Parameters.AddWithValue("@username", user.username);
+                    myCommand.Parameters.AddWithValue("@password", user.password);
+                    myCommand.Parameters.AddWithValue("@email", user.email);
+                    myCommand.Parameters.AddWithValue("@statusId", user.statusId);
+
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+
+                    myReader.Close();
+                    mycon.Close();
                 }
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["statusId"] = new SelectList(_context.status, "id", "statusName", user.statusId);
-            return View(user);
+
+            return new JsonResult("Added Successfully");
         }
 
-        // GET: Users/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        [HttpPut]
+        public JsonResult Put(User user)
         {
-            if (id == null)
+            string query = @"
+                        update user set 
+                        username =@username,
+                        password =@password,
+                        email =@email,
+                        name =@name,
+                        surname =@surname
+                        where id=@id;
+                        
+            ";
+
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("OrdersAppCon");
+            MySqlDataReader myReader;
+            using (MySqlConnection mycon = new MySqlConnection(sqlDataSource))
             {
-                return NotFound();
+                mycon.Open();
+                using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
+                {
+                    myCommand.Parameters.AddWithValue("@username", user.username);
+                    myCommand.Parameters.AddWithValue("@password", user.password);
+                    myCommand.Parameters.AddWithValue("@email", user.email);
+                    myCommand.Parameters.AddWithValue("@name", user.name);
+                    myCommand.Parameters.AddWithValue("@surname", user.surname);
+                    myCommand.Parameters.AddWithValue("@statusId", user.statusId);
+                    myCommand.Parameters.AddWithValue("@id", user.id);
+
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+
+                    myReader.Close();
+                    mycon.Close();
+                }
             }
 
-            var user = await _context.user
-                .Include(u => u.Status)
-                .FirstOrDefaultAsync(m => m.id == id);
-            if (user == null)
+            return new JsonResult("Updated Successfully");
+        }
+        
+        [HttpDelete("{id}")]
+        public JsonResult Delete(int id)
+        {
+            string query = @"
+                        delete from user 
+                        where id=@id;
+                        
+            ";
+
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("OrdersAppCon");
+            MySqlDataReader myReader;
+            using (MySqlConnection mycon = new MySqlConnection(sqlDataSource))
             {
-                return NotFound();
+                mycon.Open();
+                using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
+                {
+                    myCommand.Parameters.AddWithValue("@id", id);
+
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+
+                    myReader.Close();
+                    mycon.Close();
+                }
             }
 
-            return View(user);
+            return new JsonResult("Deleted Successfully");
         }
 
-        // POST: Users/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var user = await _context.user.FindAsync(id);
-            _context.user.Remove(user);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool UserExists(int id)
-        {
-            return _context.user.Any(e => e.id == id);
-        }
     }
+
 }
+
