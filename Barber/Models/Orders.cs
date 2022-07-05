@@ -20,7 +20,7 @@ namespace Barber.Models
 
         [Required]
         public string servicesId { get; set; }
-
+        //hfhfgjfgjfjf
         [ForeignKey("servicesId")]
         public Services Services { get; set; }
 
