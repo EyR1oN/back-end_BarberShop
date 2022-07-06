@@ -19,9 +19,9 @@ namespace Barber.Models
         [StringLength(1000)]
         public string description { get; set; }
 
-       // [Required]
-
-        public byte[] picture { get; set; }
+        [Required]
+        [StringLength(1000)]
+        public string picture { get; set; }
 
 
     }

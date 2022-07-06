@@ -16,11 +16,15 @@ namespace Barber.Models
         [StringLength(30)]
         public string username { get; set; }
         [Required]
+        [StringLength(45)]
         public string password { get; set; }
 
         [Required]
+        [StringLength(45)]
         public string email { get; set; }
+        [StringLength(45)]
         public string name { get; set; }
+        [StringLength(45)]
         public string surname { get; set; }
 
         public Status Status { get; set; }

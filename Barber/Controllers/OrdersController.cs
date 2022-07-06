@@ -1,5 +1,4 @@
 ﻿using Barber.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
@@ -8,17 +7,16 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using static Barber.Calculations.ImageConvertor;
 
 namespace Barber.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoryController : ControllerBase
+    public class OrdersController : ControllerBase
     {
         private readonly IConfiguration _configuration;
 
-        public CategoryController(IConfiguration configuration)
+        public OrdersController(IConfiguration configuration)
         {
             _configuration = configuration;
         }
@@ -27,7 +25,7 @@ namespace Barber.Controllers
         public JsonResult Get()
         {
             string query = @"
-                select * from category
+                select * from orders
             ";
 
             DataTable table = new DataTable();
@@ -51,15 +49,14 @@ namespace Barber.Controllers
         }
 
         [HttpPost]
-        public JsonResult Post(Category category)
+        public JsonResult Post(Orders orders)
         {
             string query = @"
-                        insert into category (name, description) values
-                                                    (@name, @description);
+                        insert into orders (userId, servicesId,placeId,data_time) values
+                                                    (@userId, @servicesId,@placeId,@data_time);
                         
             ";
-           // var _picture = ImageToByteArray(category.picture);
-            //return new JsonResult(category.picture.GetType());
+
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("OrdersAppCon");
             MySqlDataReader myReader;
@@ -68,9 +65,11 @@ namespace Barber.Controllers
                 mycon.Open();
                 using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
                 {
-                    myCommand.Parameters.AddWithValue("@name", category.name);
-                    myCommand.Parameters.AddWithValue("@description", category.description);
-                 //   myCommand.Parameters.AddWithValue("@picture", category.picture);
+                    myCommand.Parameters.AddWithValue("@userId", orders.userId);
+                    myCommand.Parameters.AddWithValue("@servicesId", orders.servicesId);
+                    myCommand.Parameters.AddWithValue("@placeId", orders.placeId);
+                    myCommand.Parameters.AddWithValue("@data_time", orders.data_time);
+                   
 
 
                     myReader = myCommand.ExecuteReader();
@@ -85,13 +84,14 @@ namespace Barber.Controllers
         }
 
         [HttpPut]
-        public JsonResult Put(Category category)
+        public JsonResult Put(Orders orders)
         {
             string query = @"
-                        update category set 
-                        name =@name,
-                        description =@description,
-                        picture =@picture,
+                        update orders set 
+                        userId =@userId,
+                        servicesId =@servicesId,
+                        placeId =@placeId,
+                        data_time =@data_time   
                         where id=@id;
                         
             ";
@@ -104,10 +104,11 @@ namespace Barber.Controllers
                 mycon.Open();
                 using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
                 {
-                    myCommand.Parameters.AddWithValue("@name", category.name);
-                    myCommand.Parameters.AddWithValue("@description", category.description);
-                    myCommand.Parameters.AddWithValue("@picture", category.picture);
-                    myCommand.Parameters.AddWithValue("@id", category.id);
+                    myCommand.Parameters.AddWithValue("@userId", orders.userId);
+                    myCommand.Parameters.AddWithValue("@servicesId", orders.servicesId);
+                    myCommand.Parameters.AddWithValue("@placeId", orders.placeId);
+                    myCommand.Parameters.AddWithValue("@data_time", orders.data_time);
+                    myCommand.Parameters.AddWithValue("@id", orders.id);
 
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
@@ -124,7 +125,7 @@ namespace Barber.Controllers
         public JsonResult Delete(int id)
         {
             string query = @"
-                        delete from category 
+                        delete from orders 
                         where id=@id;
                         
             ";
@@ -149,13 +150,5 @@ namespace Barber.Controllers
 
             return new JsonResult("Deleted Successfully");
         }
-
-        [HttpPost]
-        [Route("upload")]
-        public JsonResult Upload(IFormFile file)
-        {
-            return new JsonResult(file.GetType());
-        }
     }
-
 }

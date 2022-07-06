@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Barber.Migrations
 {
-    public partial class Init : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -16,7 +16,7 @@ namespace Barber.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     name = table.Column<string>(maxLength: 100, nullable: false),
                     description = table.Column<string>(maxLength: 1000, nullable: false),
-                    picture = table.Column<byte[]>(nullable: false)
+                    picture = table.Column<string>(maxLength: 1000, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -56,7 +56,7 @@ namespace Barber.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     name = table.Column<string>(maxLength: 100, nullable: false),
                     description = table.Column<string>(maxLength: 1000, nullable: false),
-                    picture = table.Column<byte[]>(nullable: false),
+                    picture = table.Column<string>(maxLength: 1000, nullable: false),
                     price = table.Column<int>(nullable: false),
                     timeToMake = table.Column<DateTime>(nullable: false),
                     categoryId = table.Column<int>(nullable: false)
@@ -79,10 +79,10 @@ namespace Barber.Migrations
                     id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     username = table.Column<string>(maxLength: 30, nullable: false),
-                    password = table.Column<string>(nullable: false),
-                    email = table.Column<string>(nullable: false),
-                    name = table.Column<string>(nullable: true),
-                    surname = table.Column<string>(nullable: true),
+                    password = table.Column<string>(maxLength: 45, nullable: false),
+                    email = table.Column<string>(maxLength: 45, nullable: false),
+                    name = table.Column<string>(maxLength: 45, nullable: true),
+                    surname = table.Column<string>(maxLength: 45, nullable: true),
                     statusId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>

@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Barber.Migrations
 {
     [DbContext(typeof(DataBaseContext))]
-    [Migration("20220705105943_Init")]
-    partial class Init
+    [Migration("20220706090727_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -35,9 +35,10 @@ namespace Barber.Migrations
                         .HasColumnType("varchar(100) CHARACTER SET utf8mb4")
                         .HasMaxLength(100);
 
-                    b.Property<byte[]>("picture")
+                    b.Property<string>("picture")
                         .IsRequired()
-                        .HasColumnType("longblob");
+                        .HasColumnType("varchar(1000) CHARACTER SET utf8mb4")
+                        .HasMaxLength(1000);
 
                     b.HasKey("id");
 
@@ -103,9 +104,10 @@ namespace Barber.Migrations
                         .HasColumnType("varchar(100) CHARACTER SET utf8mb4")
                         .HasMaxLength(100);
 
-                    b.Property<byte[]>("picture")
+                    b.Property<string>("picture")
                         .IsRequired()
-                        .HasColumnType("longblob");
+                        .HasColumnType("varchar(1000) CHARACTER SET utf8mb4")
+                        .HasMaxLength(1000);
 
                     b.Property<int>("price")
                         .HasColumnType("int");
@@ -144,20 +146,24 @@ namespace Barber.Migrations
 
                     b.Property<string>("email")
                         .IsRequired()
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(45) CHARACTER SET utf8mb4")
+                        .HasMaxLength(45);
 
                     b.Property<string>("name")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(45) CHARACTER SET utf8mb4")
+                        .HasMaxLength(45);
 
                     b.Property<string>("password")
                         .IsRequired()
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(45) CHARACTER SET utf8mb4")
+                        .HasMaxLength(45);
 
                     b.Property<int>("statusId")
                         .HasColumnType("int");
 
                     b.Property<string>("surname")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(45) CHARACTER SET utf8mb4")
+                        .HasMaxLength(45);
 
                     b.Property<string>("username")
                         .IsRequired()
