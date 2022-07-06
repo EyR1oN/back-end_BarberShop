@@ -1,4 +1,5 @@
-﻿using Barber.Models;
+﻿using Barber.Calculations;
+using Barber.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+
 
 namespace Barber.Controllers
 {
@@ -57,6 +59,8 @@ namespace Barber.Controllers
                         
             ";
 
+            string hashed_password = Password.HashPassword(user.password); 
+
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("OrdersAppCon");
             MySqlDataReader myReader;
@@ -66,7 +70,7 @@ namespace Barber.Controllers
                 using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
                 {
                     myCommand.Parameters.AddWithValue("@username", user.username);
-                    myCommand.Parameters.AddWithValue("@password", user.password);
+                    myCommand.Parameters.AddWithValue("@password", hashed_password);
                     myCommand.Parameters.AddWithValue("@email", user.email);
                     myCommand.Parameters.AddWithValue("@statusId", user.statusId);
 
@@ -78,7 +82,7 @@ namespace Barber.Controllers
                 }
             }
 
-            return new JsonResult("Added Successfully");
+            return new JsonResult("Success");
         }
 
         [HttpPut]

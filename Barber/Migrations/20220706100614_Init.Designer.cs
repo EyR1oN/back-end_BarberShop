@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Barber.Migrations
 {
     [DbContext(typeof(DataBaseContext))]
-    [Migration("20220706090727_init")]
-    partial class init
+    [Migration("20220706100614_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -155,8 +155,8 @@ namespace Barber.Migrations
 
                     b.Property<string>("password")
                         .IsRequired()
-                        .HasColumnType("varchar(45) CHARACTER SET utf8mb4")
-                        .HasMaxLength(45);
+                        .HasColumnType("varchar(500) CHARACTER SET utf8mb4")
+                        .HasMaxLength(500);
 
                     b.Property<int>("statusId")
                         .HasColumnType("int");

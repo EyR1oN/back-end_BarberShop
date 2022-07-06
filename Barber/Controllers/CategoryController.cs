@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using static Barber.Calculations.ImageConvertor;
 
 namespace Barber.Controllers
 {

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Barber.Migrations
 {
-    public partial class init : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -79,7 +79,7 @@ namespace Barber.Migrations
                     id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     username = table.Column<string>(maxLength: 30, nullable: false),
-                    password = table.Column<string>(maxLength: 45, nullable: false),
+                    password = table.Column<string>(maxLength: 500, nullable: false),
                     email = table.Column<string>(maxLength: 45, nullable: false),
                     name = table.Column<string>(maxLength: 45, nullable: true),
                     surname = table.Column<string>(maxLength: 45, nullable: true),

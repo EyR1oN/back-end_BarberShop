@@ -153,8 +153,8 @@ namespace Barber.Migrations
 
                     b.Property<string>("password")
                         .IsRequired()
-                        .HasColumnType("varchar(45) CHARACTER SET utf8mb4")
-                        .HasMaxLength(45);
+                        .HasColumnType("varchar(500) CHARACTER SET utf8mb4")
+                        .HasMaxLength(500);
 
                     b.Property<int>("statusId")
                         .HasColumnType("int");

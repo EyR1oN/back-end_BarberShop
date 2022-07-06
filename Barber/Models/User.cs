@@ -16,7 +16,7 @@ namespace Barber.Models
         [StringLength(30)]
         public string username { get; set; }
         [Required]
-        [StringLength(45)]
+        [StringLength(500)]
         public string password { get; set; }
 
         [Required]
