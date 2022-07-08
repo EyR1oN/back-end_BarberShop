@@ -1,5 +1,6 @@
 ﻿using Barber.Calculations;
 using Barber.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace Barber.Controllers
 {
+    
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -22,7 +24,7 @@ namespace Barber.Controllers
         {
             _configuration = configuration;
         }
-
+       
         [HttpGet]
         public JsonResult Get()
         {
@@ -85,6 +87,7 @@ namespace Barber.Controllers
             return new JsonResult("Success");
         }
 
+        [Authorize]
         [HttpPut]
         public JsonResult Put(User user)
         {
@@ -125,7 +128,8 @@ namespace Barber.Controllers
 
             return new JsonResult("Updated Successfully");
         }
-        
+
+        [Authorize]
         [HttpDelete("{id}")]
         public JsonResult Delete(int id)
         {

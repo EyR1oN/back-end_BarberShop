@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -11,6 +12,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Barber.Models;
+using BasicAuthWebAPI.Helpers;
 
 namespace Barber
 {
@@ -35,6 +38,9 @@ namespace Barber
                 c.AddPolicy("AllowOrigin", option => option.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             });
 
+            services.AddAuthentication("BasicAuth")
+            .AddScheme<AuthenticationSchemeOptions, BasicAuthHandler>("BasicAuth", null);
+
             services.AddControllersWithViews().AddNewtonsoftJson(option =>
             option.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore)
                 .AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
@@ -51,6 +57,8 @@ namespace Barber
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

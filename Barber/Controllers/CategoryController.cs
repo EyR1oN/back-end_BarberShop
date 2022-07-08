@@ -1,4 +1,5 @@
 ﻿using Barber.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -11,8 +12,10 @@ using System.Threading.Tasks;
 
 namespace Barber.Controllers
 {
+    
     [Route("api/[controller]")]
     [ApiController]
+
     public class CategoryController : ControllerBase
     {
         private readonly IConfiguration _configuration;
@@ -21,6 +24,7 @@ namespace Barber.Controllers
         {
             _configuration = configuration;
         }
+
 
         [HttpGet]
         public JsonResult Get()
@@ -49,6 +53,7 @@ namespace Barber.Controllers
             return new JsonResult(table);
         }
 
+        [Authorize]
         [HttpPost]
         public JsonResult Post(Category category)
         {
@@ -82,7 +87,7 @@ namespace Barber.Controllers
 
             return new JsonResult("Added Successfully");
         }
-
+        [Authorize]
         [HttpPut]
         public JsonResult Put(Category category)
         {
@@ -118,7 +123,7 @@ namespace Barber.Controllers
 
             return new JsonResult("Updated Successfully");
         }
-
+        [Authorize]
         [HttpDelete("{id}")]
         public JsonResult Delete(int id)
         {
@@ -148,13 +153,8 @@ namespace Barber.Controllers
 
             return new JsonResult("Deleted Successfully");
         }
-
-        [HttpPost]
-        [Route("upload")]
-        public JsonResult Upload(IFormFile file)
-        {
-            return new JsonResult(file.GetType());
-        }
+        
+        
     }
 
 }

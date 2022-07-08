@@ -1,4 +1,5 @@
 ﻿using Barber.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
@@ -48,6 +49,7 @@ namespace Barber.Controllers
             return new JsonResult(table);
         }
 
+        [Authorize]
         [HttpPost]
         public JsonResult Post(Services services)
         {
@@ -84,6 +86,7 @@ namespace Barber.Controllers
             return new JsonResult("Added Successfully");
         }
 
+        [Authorize]
         [HttpPut]
         public JsonResult Put(Services services)
         {
@@ -126,6 +129,7 @@ namespace Barber.Controllers
             return new JsonResult("Updated Successfully");
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public JsonResult Delete(int id)
         {
