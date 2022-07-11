@@ -8,6 +8,9 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Text;
 using System.Security.Claims;
+using System.Data;
+using MySql.Data.MySqlClient;
+using Barber.Calculations;
 
 namespace BasicAuthWebAPI.Helpers
 {
@@ -31,8 +34,47 @@ namespace BasicAuthWebAPI.Helpers
                 var authHeader = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
                 var credentialsByes = Convert.FromBase64String(authHeader.Parameter);
                 var credentials = Encoding.UTF8.GetString(credentialsByes).Split(':');
+                string password;
 
-                if ("1" == credentials[0] && "1" == credentials[1])
+                try
+                {
+                    string query = @"
+                select * from user where username = @username
+            ";
+
+                    DataTable table = new DataTable();
+                    string sqlDataSource = _configuration.GetConnectionString("OrdersAppCon");
+                    MySqlDataReader myReader;
+                    using (MySqlConnection mycon = new MySqlConnection(sqlDataSource))
+                    {
+                        mycon.Open();
+                        using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
+                        {
+
+                            myCommand.Parameters.AddWithValue("@username", credentials[0]);
+
+                            myReader = myCommand.ExecuteReader();
+                            table.Load(myReader);
+
+                            myReader.Close();
+                            mycon.Close();
+
+                            password = table.Rows[0]["password"].ToString();
+
+
+                        }
+                    }
+                    
+                    
+                }
+                catch
+                {
+                    return AuthenticateResult.Fail("No such user in database");
+                }
+
+
+
+                if (Password.VerifyPassword(password, credentials[1]))
                 {
                     var claims = new[] {
                         new Claim(ClaimTypes.Name, credentials[0])

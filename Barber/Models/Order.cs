@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Barber.Models
 {
-    public class Orders
+    public class Order
     {
         [Key]
         public int id { get; set; }
@@ -18,11 +18,11 @@ namespace Barber.Models
         [Required]
         public int userId { get; set; }
 
-        public Services Services { get; set; }
-        [ForeignKey("Services")]     
+        public Service Service { get; set; }
+        [ForeignKey("Service")]     
 
         [Required]
-        public int servicesId { get; set; }
+        public int serviceId { get; set; }
 
         public Place Place { get; set; }
         [ForeignKey("Place")]       

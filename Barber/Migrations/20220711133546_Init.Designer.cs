@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Barber.Migrations
 {
     [DbContext(typeof(DataBaseContext))]
-    [Migration("20220706100614_Init")]
+    [Migration("20220711133546_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,7 +45,7 @@ namespace Barber.Migrations
                     b.ToTable("category");
                 });
 
-            modelBuilder.Entity("Barber.Models.Orders", b =>
+            modelBuilder.Entity("Barber.Models.Order", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -57,7 +57,7 @@ namespace Barber.Migrations
                     b.Property<int>("placeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("servicesId")
+                    b.Property<int>("serviceId")
                         .HasColumnType("int");
 
                     b.Property<int>("userId")
@@ -67,11 +67,11 @@ namespace Barber.Migrations
 
                     b.HasIndex("placeId");
 
-                    b.HasIndex("servicesId");
+                    b.HasIndex("serviceId");
 
                     b.HasIndex("userId");
 
-                    b.ToTable("orders");
+                    b.ToTable("order");
                 });
 
             modelBuilder.Entity("Barber.Models.Place", b =>
@@ -85,7 +85,7 @@ namespace Barber.Migrations
                     b.ToTable("place");
                 });
 
-            modelBuilder.Entity("Barber.Models.Services", b =>
+            modelBuilder.Entity("Barber.Models.Service", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -119,7 +119,7 @@ namespace Barber.Migrations
 
                     b.HasIndex("categoryId");
 
-                    b.ToTable("services");
+                    b.ToTable("service");
                 });
 
             modelBuilder.Entity("Barber.Models.Status", b =>
@@ -177,7 +177,7 @@ namespace Barber.Migrations
                     b.ToTable("user");
                 });
 
-            modelBuilder.Entity("Barber.Models.Orders", b =>
+            modelBuilder.Entity("Barber.Models.Order", b =>
                 {
                     b.HasOne("Barber.Models.Place", "Place")
                         .WithMany()
@@ -185,9 +185,9 @@ namespace Barber.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Barber.Models.Services", "Services")
+                    b.HasOne("Barber.Models.Service", "Service")
                         .WithMany()
-                        .HasForeignKey("servicesId")
+                        .HasForeignKey("serviceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -198,7 +198,7 @@ namespace Barber.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Barber.Models.Services", b =>
+            modelBuilder.Entity("Barber.Models.Service", b =>
                 {
                     b.HasOne("Barber.Models.Category", "Category")
                         .WithMany()

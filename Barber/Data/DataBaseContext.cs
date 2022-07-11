@@ -18,8 +18,8 @@ namespace Barber.Data
         public virtual DbSet<User> user { get; set; }
         public virtual DbSet<Place> place { get; set; }
         public virtual DbSet<Category> category { get; set; }
-        public virtual DbSet<Services> services { get; set; }
-        public virtual DbSet<Orders> orders { get; set; }
+        public virtual DbSet<Service> service { get; set; }
+        public virtual DbSet<Order> order { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

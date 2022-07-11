@@ -49,7 +49,7 @@ namespace Barber.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "services",
+                name: "service",
                 columns: table => new
                 {
                     id = table.Column<int>(nullable: false)
@@ -63,9 +63,9 @@ namespace Barber.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_services", x => x.id);
+                    table.PrimaryKey("PK_service", x => x.id);
                     table.ForeignKey(
-                        name: "FK_services_category_categoryId",
+                        name: "FK_service_category_categoryId",
                         column: x => x.categoryId,
                         principalTable: "category",
                         principalColumn: "id",
@@ -97,33 +97,33 @@ namespace Barber.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "orders",
+                name: "order",
                 columns: table => new
                 {
                     id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     userId = table.Column<int>(nullable: false),
-                    servicesId = table.Column<int>(nullable: false),
+                    serviceId = table.Column<int>(nullable: false),
                     placeId = table.Column<int>(nullable: false),
                     data_time = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_orders", x => x.id);
+                    table.PrimaryKey("PK_order", x => x.id);
                     table.ForeignKey(
-                        name: "FK_orders_place_placeId",
+                        name: "FK_order_place_placeId",
                         column: x => x.placeId,
                         principalTable: "place",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_orders_services_servicesId",
-                        column: x => x.servicesId,
-                        principalTable: "services",
+                        name: "FK_order_service_serviceId",
+                        column: x => x.serviceId,
+                        principalTable: "service",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_orders_user_userId",
+                        name: "FK_order_user_userId",
                         column: x => x.userId,
                         principalTable: "user",
                         principalColumn: "id",
@@ -131,23 +131,23 @@ namespace Barber.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_orders_placeId",
-                table: "orders",
+                name: "IX_order_placeId",
+                table: "order",
                 column: "placeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_orders_servicesId",
-                table: "orders",
-                column: "servicesId");
+                name: "IX_order_serviceId",
+                table: "order",
+                column: "serviceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_orders_userId",
-                table: "orders",
+                name: "IX_order_userId",
+                table: "order",
                 column: "userId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_services_categoryId",
-                table: "services",
+                name: "IX_service_categoryId",
+                table: "service",
                 column: "categoryId");
 
             migrationBuilder.CreateIndex(
@@ -159,13 +159,13 @@ namespace Barber.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "orders");
+                name: "order");
 
             migrationBuilder.DropTable(
                 name: "place");
 
             migrationBuilder.DropTable(
-                name: "services");
+                name: "service");
 
             migrationBuilder.DropTable(
                 name: "user");

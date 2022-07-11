@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Barber.Models
 {
-    public class Services
+    public class Service
     {
         [Key]
         public int id { get; set; }

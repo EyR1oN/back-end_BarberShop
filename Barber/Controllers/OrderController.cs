@@ -13,11 +13,11 @@ namespace Barber.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OrdersController : ControllerBase
+    public class OrderController : ControllerBase
     {
         private readonly IConfiguration _configuration;
 
-        public OrdersController(IConfiguration configuration)
+        public OrderController(IConfiguration configuration)
         {
             _configuration = configuration;
         }
@@ -51,7 +51,7 @@ namespace Barber.Controllers
 
         [Authorize]
         [HttpPost]
-        public JsonResult Post(Orders orders)
+        public JsonResult Post(Order orders)
         {
             string query = @"
                         insert into orders (userId, servicesId,placeId,data_time) values
@@ -68,7 +68,7 @@ namespace Barber.Controllers
                 using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
                 {
                     myCommand.Parameters.AddWithValue("@userId", orders.userId);
-                    myCommand.Parameters.AddWithValue("@servicesId", orders.servicesId);
+                    myCommand.Parameters.AddWithValue("@servicesId", orders.serviceId);
                     myCommand.Parameters.AddWithValue("@placeId", orders.placeId);
                     myCommand.Parameters.AddWithValue("@data_time", orders.data_time);
                    
@@ -87,7 +87,7 @@ namespace Barber.Controllers
 
         [Authorize]
         [HttpPut]
-        public JsonResult Put(Orders orders)
+        public JsonResult Put(Order orders)
         {
             string query = @"
                         update orders set 
@@ -108,7 +108,7 @@ namespace Barber.Controllers
                 using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
                 {
                     myCommand.Parameters.AddWithValue("@userId", orders.userId);
-                    myCommand.Parameters.AddWithValue("@servicesId", orders.servicesId);
+                    myCommand.Parameters.AddWithValue("@servicesId", orders.serviceId);
                     myCommand.Parameters.AddWithValue("@placeId", orders.placeId);
                     myCommand.Parameters.AddWithValue("@data_time", orders.data_time);
                     myCommand.Parameters.AddWithValue("@id", orders.id);

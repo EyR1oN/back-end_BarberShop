@@ -13,11 +13,11 @@ namespace Barber.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ServicesController: ControllerBase
+    public class ServiceController: ControllerBase
     {
         private readonly IConfiguration _configuration;
 
-        public ServicesController(IConfiguration configuration)
+        public ServiceController(IConfiguration configuration)
         {
             _configuration = configuration;
         }
@@ -51,7 +51,7 @@ namespace Barber.Controllers
 
         [Authorize]
         [HttpPost]
-        public JsonResult Post(Services services)
+        public JsonResult Post(Service services)
         {
             string query = @"
                         insert into services (name, description,picture,price,timeToMake,categoryId) values
@@ -88,7 +88,7 @@ namespace Barber.Controllers
 
         [Authorize]
         [HttpPut]
-        public JsonResult Put(Services services)
+        public JsonResult Put(Service services)
         {
             string query = @"
                         update services set 
