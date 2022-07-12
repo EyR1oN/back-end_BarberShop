@@ -58,7 +58,7 @@ namespace Barber.Migrations
                     description = table.Column<string>(maxLength: 1000, nullable: false),
                     picture = table.Column<string>(maxLength: 1000, nullable: false),
                     price = table.Column<int>(nullable: false),
-                    timeToMake = table.Column<DateTime>(nullable: false),
+                    timeToMake = table.Column<TimeSpan>(nullable: false),
                     categoryId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>

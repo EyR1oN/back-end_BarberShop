@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Barber.Migrations
 {
     [DbContext(typeof(DataBaseContext))]
-    [Migration("20220711133546_Init")]
+    [Migration("20220712164808_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -112,8 +112,8 @@ namespace Barber.Migrations
                     b.Property<int>("price")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("timeToMake")
-                        .HasColumnType("datetime(6)");
+                    b.Property<TimeSpan>("timeToMake")
+                        .HasColumnType("time(6)");
 
                     b.HasKey("id");
 

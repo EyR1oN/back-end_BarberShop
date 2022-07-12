@@ -110,8 +110,8 @@ namespace Barber.Migrations
                     b.Property<int>("price")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("timeToMake")
-                        .HasColumnType("datetime(6)");
+                    b.Property<TimeSpan>("timeToMake")
+                        .HasColumnType("time(6)");
 
                     b.HasKey("id");
 

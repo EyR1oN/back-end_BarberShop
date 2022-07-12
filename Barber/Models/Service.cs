@@ -28,7 +28,7 @@ namespace Barber.Models
         public int price { get; set; }
 
         [Required]
-        public DateTime timeToMake { get; set; }
+        public TimeSpan timeToMake { get; set; }
         
         public Category Category { get; set; }
         [ForeignKey("Category")]
