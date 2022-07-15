@@ -33,10 +33,13 @@ namespace Barber
 
               services.AddControllers();
 
-            services.AddCors(c =>
-            {
-                c.AddPolicy("AllowOrigin", option => option.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-            });
+            //services.AddCors(c =>
+            //{
+            //    c.AddPolicy("AllowOrigin", option => option.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            //});
+            services.AddCors(options =>
+            options.AddDefaultPolicy(
+            builder => builder.AllowAnyOrigin()));
 
             services.AddAuthentication("BasicAuth")
             .AddScheme<AuthenticationSchemeOptions, BasicAuthHandler>("BasicAuth", null);
@@ -58,9 +61,12 @@ namespace Barber
 
             app.UseRouting();
 
+            app.UseCors();
+
             app.UseAuthentication();
 
             app.UseAuthorization();
+
 
             app.UseEndpoints(endpoints =>
             {
