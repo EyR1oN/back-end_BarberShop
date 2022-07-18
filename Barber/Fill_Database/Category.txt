@@ -1,6 +1,6 @@
 insert into barbershop.category values 
-(null, "classic haircut", "haircut using hair clipper and scissors", "./../Image/classic_haircut.jpg"),
-(null, "mustache and beard trim", "combing, cutting mustaches and beards", "./../Image/beard_mustache.jpg"),
-(null, "hair washing and styling", "washing and styling your hair, mostache or beard", "./../Image/styling.jpg"),
-(null, "children's haircut", "classic haircut using hair clipper and scissors for children", "./../Image/child_haircut.jpg"),
-(null, "camouflage hair, beard and mustache", "painting the beard, hair or mustache borders", "./../Image/camouflage.jpg");
+(null, "classic haircut", "haircut using hair clipper and scissors", "./images/classic_haircut.jpg"),
+(null, "mustache and beard trim", "combing, cutting mustaches and beards", "./images/beard_mustache.jpg"),
+(null, "hair washing and styling", "washing and styling your hair, mostache or beard", "./images/styling.jpg"),
+(null, "children's haircut", "classic haircut using hair clipper and scissors for children", "./images/child_haircut.jpg"),
+(null, "camouflage hair, beard and mustache", "painting the beard, hair or mustache borders", "./images/camouflage.jpg");
