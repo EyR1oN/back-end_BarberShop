@@ -160,6 +160,58 @@ namespace Barber.Controllers
             return new JsonResult("Deleted Successfully");
         }
 
+        [HttpGet("{username}/{password}")]
+        public JsonResult Login(string username, string password)
+        {
+
+            //var user1 = _context.user.Where(users => users.username.Equals(username) && users.password.Equals(password)).ToList();
+
+
+            //if (user1.Count() == 0)
+            //{
+            //    return new JsonResult("Error");
+            //}
+            //else
+            //{
+            //    return new JsonResult("Success");
+            //}
+            string query = @"
+               SELECT * FROM user WHERE username=@username;
+            ";
+
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("OrdersAppCon");
+            MySqlDataReader myReader;
+            using (MySqlConnection mycon = new MySqlConnection(sqlDataSource))
+            {
+                mycon.Open();
+                using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
+                {
+                    myCommand.Parameters.AddWithValue("@username", username);
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+
+                    myReader.Close();
+                    mycon.Close();
+                    //  table.Clear();
+                }
+            }
+            if (table.Rows.Count == 0)
+            {
+                return new JsonResult("User not exists");
+            }
+
+            if (Password.VerifyPassword(table.Rows[0]["password"].ToString(), password))
+            {
+                return new JsonResult(table);
+            }
+            else
+            {
+                return new JsonResult("Incorrect password");
+            }
+
+        }
+
     }
 
 }

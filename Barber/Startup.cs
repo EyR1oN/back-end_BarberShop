@@ -39,7 +39,7 @@ namespace Barber
             //});
             services.AddCors(options =>
             options.AddDefaultPolicy(
-            builder => builder.AllowAnyOrigin()));
+            builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
 
             services.AddAuthentication("BasicAuth")
             .AddScheme<AuthenticationSchemeOptions, BasicAuthHandler>("BasicAuth", null);
