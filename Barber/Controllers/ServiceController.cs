@@ -26,7 +26,7 @@ namespace Barber.Controllers
         public JsonResult Get()
         {
             string query = @"
-                select * from services
+                select * from service
             ";
 
             DataTable table = new DataTable();
@@ -49,12 +49,40 @@ namespace Barber.Controllers
             return new JsonResult(table);
         }
 
-        [Authorize]
-        [HttpPost]
-        public JsonResult Post(Service services)
+        [HttpGet("{categoryId}")]
+        public JsonResult GetByCategoryId(int categoryId)
         {
             string query = @"
-                        insert into services (name, description,picture,price,timeToMake,categoryId) values
+                select * from service where categoryId=@categoryId;
+            ";
+
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("OrdersAppCon");
+            MySqlDataReader myReader;
+            using (MySqlConnection mycon = new MySqlConnection(sqlDataSource))
+            {
+                mycon.Open();
+                using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
+                {
+                    myCommand.Parameters.AddWithValue("@categoryId", categoryId);
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+
+                    myReader.Close();
+                    mycon.Close();
+                    //  table.Clear();
+                }
+            }
+
+            return new JsonResult(table);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public JsonResult Post(Service service)
+        {
+            string query = @"
+                        insert into service (name, description,picture,price,timeToMake,categoryId) values
                                                     (@name, @description,@picture,@price,@timeToMake,@categoryId);
                         
             ";
@@ -67,12 +95,12 @@ namespace Barber.Controllers
                 mycon.Open();
                 using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
                 {
-                    myCommand.Parameters.AddWithValue("@name", services.name);
-                    myCommand.Parameters.AddWithValue("@description", services.description);
-                    myCommand.Parameters.AddWithValue("@picture", services.picture);
-                    myCommand.Parameters.AddWithValue("@price", services.price);
-                    myCommand.Parameters.AddWithValue("@timeToMake", services.timeToMake);
-                    myCommand.Parameters.AddWithValue("@categoryId", services.categoryId);
+                    myCommand.Parameters.AddWithValue("@name", service.name);
+                    myCommand.Parameters.AddWithValue("@description", service.description);
+                    myCommand.Parameters.AddWithValue("@picture", service.picture);
+                    myCommand.Parameters.AddWithValue("@price", service.price);
+                    myCommand.Parameters.AddWithValue("@timeToMake", service.timeToMake);
+                    myCommand.Parameters.AddWithValue("@categoryId", service.categoryId);
 
 
                     myReader = myCommand.ExecuteReader();
@@ -91,7 +119,7 @@ namespace Barber.Controllers
         public JsonResult Put(Service services)
         {
             string query = @"
-                        update services set 
+                        update service set 
                         name =@name,
                         description =@description,
                         picture =@picture,
@@ -134,7 +162,7 @@ namespace Barber.Controllers
         public JsonResult Delete(int id)
         {
             string query = @"
-                        delete from services 
+                        delete from service
                         where id=@id;
                         
             ";

@@ -56,8 +56,8 @@ namespace Barber.Controllers
         public JsonResult Post(User user)
         {
             string query = @"
-                        insert into user (username, password, email, statusId) values
-                                                    (@username, @password, @email, @statusId);
+                        insert into user (username, password, email, name, surname, statusId) values
+                                                    (@username, @password, @email, @name, @surname, @statusId);
                         
             ";
 
@@ -74,6 +74,8 @@ namespace Barber.Controllers
                     myCommand.Parameters.AddWithValue("@username", user.username);
                     myCommand.Parameters.AddWithValue("@password", hashed_password);
                     myCommand.Parameters.AddWithValue("@email", user.email);
+                    myCommand.Parameters.AddWithValue("@name", user.name);
+                    myCommand.Parameters.AddWithValue("@surname", user.surname);
                     myCommand.Parameters.AddWithValue("@statusId", user.statusId);
 
                     myReader = myCommand.ExecuteReader();
@@ -84,7 +86,7 @@ namespace Barber.Controllers
                 }
             }
 
-            return new JsonResult("Success");
+            return new JsonResult(table);
         }
 
         [Authorize]
