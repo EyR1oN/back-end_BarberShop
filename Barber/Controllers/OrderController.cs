@@ -26,7 +26,7 @@ namespace Barber.Controllers
         public JsonResult Get()
         {
             string query = @"
-                select * from orders
+                select * from barbershop.order
             ";
 
             DataTable table = new DataTable();
@@ -51,11 +51,11 @@ namespace Barber.Controllers
 
         [Authorize]
         [HttpPost]
-        public JsonResult Post(Order orders)
+        public JsonResult Post(Order order)
         {
             string query = @"
-                        insert into orders (userId, servicesId,placeId,data_time) values
-                                                    (@userId, @servicesId,@placeId,@data_time);
+                        insert into barbershop.order (userId, serviceId,placeId,data_time) values
+                                                    (@userId, @serviceId,@placeId,@data_time);
                         
             ";
 
@@ -67,10 +67,10 @@ namespace Barber.Controllers
                 mycon.Open();
                 using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
                 {
-                    myCommand.Parameters.AddWithValue("@userId", orders.userId);
-                    myCommand.Parameters.AddWithValue("@servicesId", orders.serviceId);
-                    myCommand.Parameters.AddWithValue("@placeId", orders.placeId);
-                    myCommand.Parameters.AddWithValue("@data_time", orders.data_time);
+                    myCommand.Parameters.AddWithValue("@userId", order.userId);
+                    myCommand.Parameters.AddWithValue("@serviceId", order.serviceId);
+                    myCommand.Parameters.AddWithValue("@placeId", order.placeId);
+                    myCommand.Parameters.AddWithValue("@data_time", order.data_time);
                    
 
 
@@ -87,12 +87,12 @@ namespace Barber.Controllers
 
         [Authorize]
         [HttpPut]
-        public JsonResult Put(Order orders)
+        public JsonResult Put(Order order)
         {
             string query = @"
-                        update orders set 
+                        update barbershop.order set 
                         userId =@userId,
-                        servicesId =@servicesId,
+                        serviceId =@serviceId,
                         placeId =@placeId,
                         data_time =@data_time   
                         where id=@id;
@@ -107,11 +107,11 @@ namespace Barber.Controllers
                 mycon.Open();
                 using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
                 {
-                    myCommand.Parameters.AddWithValue("@userId", orders.userId);
-                    myCommand.Parameters.AddWithValue("@servicesId", orders.serviceId);
-                    myCommand.Parameters.AddWithValue("@placeId", orders.placeId);
-                    myCommand.Parameters.AddWithValue("@data_time", orders.data_time);
-                    myCommand.Parameters.AddWithValue("@id", orders.id);
+                    myCommand.Parameters.AddWithValue("@userId", order.userId);
+                    myCommand.Parameters.AddWithValue("@serviceId", order.serviceId);
+                    myCommand.Parameters.AddWithValue("@placeId", order.placeId);
+                    myCommand.Parameters.AddWithValue("@data_time", order.data_time);
+                    myCommand.Parameters.AddWithValue("@id", order.id);
 
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
@@ -129,7 +129,7 @@ namespace Barber.Controllers
         public JsonResult Delete(int id)
         {
             string query = @"
-                        delete from orders 
+                        delete from barbershop.order 
                         where id=@id;
                         
             ";
