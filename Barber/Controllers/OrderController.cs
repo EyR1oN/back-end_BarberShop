@@ -52,40 +52,50 @@ namespace Barber.Controllers
 
         [Authorize]
         [HttpPost]
-        public JsonResult Post([FromBody] string orders)
+        public JsonResult Post(List<Order> orders)
         {
 
-            //string query = @"
-            //            insert into barbershop.order (userId, serviceId,placeId,date,time) values
-            //                                        (@userId, @serviceId,@placeId,@date,@time);
+            
+            string query = @"
+                        insert into barbershop.order (userId, serviceId,placeId,date,time) values
+                                                    (@userId, @serviceId,@placeId,@date,@time);
 
-            //";
+            ";
 
-            //DataTable table = new DataTable();
-            //string sqlDataSource = _configuration.GetConnectionString("OrdersAppCon");
-            //MySqlDataReader myReader;
-            //using (MySqlConnection mycon = new MySqlConnection(sqlDataSource))
-            //{
-            //    mycon.Open();
-            //    using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
-            //    {
-            //        myCommand.Parameters.AddWithValue("@userId", order.userId);
-            //        myCommand.Parameters.AddWithValue("@serviceId", order.serviceId);
-            //        myCommand.Parameters.AddWithValue("@placeId", order.placeId);
-            //        myCommand.Parameters.AddWithValue("@date", order.date);
-            //        myCommand.Parameters.AddWithValue("@time", order.time);
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("OrdersAppCon");
+            MySqlDataReader myReader;
+            
+
+            using (MySqlConnection mycon = new MySqlConnection(sqlDataSource))
+            {
+                mycon.Open();
+                for (int i = 0; i < orders.Count(); i++)
+                {
+                   
+                    using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
+                    {
+                        myCommand.Parameters.AddWithValue("@userId", orders[i].userId);
+                        myCommand.Parameters.AddWithValue("@serviceId", orders[i].serviceId);
+                        myCommand.Parameters.AddWithValue("@placeId", orders[i].placeId);
+                        myCommand.Parameters.AddWithValue("@date", orders[i].date);
+                        myCommand.Parameters.AddWithValue("@time", orders[i].time);
 
 
 
-            //        myReader = myCommand.ExecuteReader();
-            //        table.Load(myReader);
+                        myReader = myCommand.ExecuteReader();
+                        table.Load(myReader);
 
-            //        myReader.Close();
-            //        mycon.Close();
-            //    }
-            //}
-            Console.WriteLine(orders);
-            return new JsonResult(orders);
+                        myReader.Close();
+                        
+                    }
+                    Console.WriteLine(orders[i]);
+                }
+                mycon.Close();
+            }
+            
+            
+            return new JsonResult("Added successfully");
         }
 
         [Authorize]
