@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Barber.Migrations
 {
-    public partial class Init : Migration
+    public partial class MyMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -105,7 +105,8 @@ namespace Barber.Migrations
                     userId = table.Column<int>(nullable: false),
                     serviceId = table.Column<int>(nullable: false),
                     placeId = table.Column<int>(nullable: false),
-                    data_time = table.Column<DateTime>(nullable: false)
+                    date = table.Column<DateTime>(nullable: false),
+                    time = table.Column<TimeSpan>(nullable: false)
                 },
                 constraints: table =>
                 {

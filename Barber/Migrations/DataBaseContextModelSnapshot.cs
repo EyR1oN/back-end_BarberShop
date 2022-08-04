@@ -49,7 +49,7 @@ namespace Barber.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("data_time")
+                    b.Property<DateTime>("date")
                         .HasColumnType("datetime(6)");
 
                     b.Property<int>("placeId")
@@ -57,6 +57,9 @@ namespace Barber.Migrations
 
                     b.Property<int>("serviceId")
                         .HasColumnType("int");
+
+                    b.Property<TimeSpan>("time")
+                        .HasColumnType("time(6)");
 
                     b.Property<int>("userId")
                         .HasColumnType("int");

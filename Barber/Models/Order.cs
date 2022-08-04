@@ -31,6 +31,11 @@ namespace Barber.Models
         public int placeId { get; set; }
 
         [Required]
-        public DateTime data_time { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
+        public DateTime date { get; set; }
+
+        [Required]
+        public TimeSpan time { get; set; }
     }
 }

@@ -1,5 +1,5 @@
 insert into barbershop.category values 
-(null, "classic haircut", "haircut using hair clipper and scissors", ".images/classic_haircut.jpg"),
+(null, "classic haircut", "haircut using hair clipper and scissors", "./images/classic_haircut.jpg"),
 (null, "mustache and beard trim", "combing, cutting mustaches and beards", "./images/beard_mustache.jpg"),
 (null, "hair washing and styling", "washing and styling your hair, mostache or beard", "./images/styling.jpg"),
 (null, "children's haircut", "classic haircut using hair clipper and scissors for children", "./images/child_haircut.jpg"),

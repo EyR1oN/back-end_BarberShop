@@ -1,0 +1,1 @@
+﻿ALTER TABLE `order` CHANGE `date` `date` DATE NOT NULL;

@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Barber.Migrations
 {
     [DbContext(typeof(DataBaseContext))]
-    [Migration("20220712164808_Init")]
-    partial class Init
+    [Migration("20220801141353_MyMigration")]
+    partial class MyMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -51,7 +51,7 @@ namespace Barber.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("data_time")
+                    b.Property<DateTime>("date")
                         .HasColumnType("datetime(6)");
 
                     b.Property<int>("placeId")
@@ -59,6 +59,9 @@ namespace Barber.Migrations
 
                     b.Property<int>("serviceId")
                         .HasColumnType("int");
+
+                    b.Property<TimeSpan>("time")
+                        .HasColumnType("time(6)");
 
                     b.Property<int>("userId")
                         .HasColumnType("int");
