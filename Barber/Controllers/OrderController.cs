@@ -1,4 +1,5 @@
-﻿using Barber.Models;
+﻿using Barber.Calculations;
+using Barber.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -11,7 +12,16 @@ using System.Threading.Tasks;
 
 namespace Barber.Controllers
 {
-    
+    public static class Extensions
+    {
+        public static void Append<K, V>(this Dictionary<K, V> first, Dictionary<K, V> second)
+        {
+            List<KeyValuePair<K, V>> pairs = second.ToList();
+            pairs.ForEach(pair => first.Add(pair.Key, pair.Value));
+        }
+    }
+
+
     [Route("api/[controller]")]
     [ApiController]
     public class OrderController : ControllerBase
@@ -43,7 +53,7 @@ namespace Barber.Controllers
 
                     myReader.Close();
                     mycon.Close();
-                    //  table.Clear();
+                  
                 }
             }
 
@@ -51,8 +61,8 @@ namespace Barber.Controllers
         }
 
         [Authorize]
-        [HttpPost]
-        public JsonResult Post(List<Order> orders)
+        [HttpPost("{sumTime}")]
+        public JsonResult Post(List<Order> orders, int sumTime)
         {
 
             
@@ -61,12 +71,17 @@ namespace Barber.Controllers
                                                     (@userId, @serviceId,@placeId,@date,@time);
 
             ";
-
+            Dictionary<string, List<List<int>>> dictionaryForDefPlace = new Dictionary<string, List<List<int>>>();
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("OrdersAppCon");
             MySqlDataReader myReader;
-            
-
+            int start_time = ConvertDateAndTime.ConvertTime((orders[0].time).ToString());
+            string date1 = (orders[0].date).ToString();
+          
+            Dictionary<string, List<List<int>>> dictionaryConv = new Dictionary<string, List<List<int>>>();
+           string corectPlaceId = ApiHelper.DefinePlaceId(dictionaryConv, sumTime, start_time, _configuration, ConvertDateAndTime.ConvertDate(date1));
+           
+            Console.WriteLine(corectPlaceId);
             using (MySqlConnection mycon = new MySqlConnection(sqlDataSource))
             {
                 mycon.Open();
@@ -77,13 +92,13 @@ namespace Barber.Controllers
                     {
                         myCommand.Parameters.AddWithValue("@userId", orders[i].userId);
                         myCommand.Parameters.AddWithValue("@serviceId", orders[i].serviceId);
-                        myCommand.Parameters.AddWithValue("@placeId", orders[i].placeId);
+                        myCommand.Parameters.AddWithValue("@placeId", corectPlaceId);
                         myCommand.Parameters.AddWithValue("@date", orders[i].date);
                         myCommand.Parameters.AddWithValue("@time", orders[i].time);
 
+                        
 
-
-                        myReader = myCommand.ExecuteReader();
+                        myReader = myCommand.ExecuteReader(); 
                         table.Load(myReader);
 
                         myReader.Close();
@@ -93,8 +108,8 @@ namespace Barber.Controllers
                 }
                 mycon.Close();
             }
-            
-            
+            Console.WriteLine(start_time+ "  =  "+ sumTime + "  =  " +date1);
+
             return new JsonResult("Added successfully");
         }
 
@@ -148,7 +163,7 @@ namespace Barber.Controllers
                         where id=@id;
                         
             ";
-
+           
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("OrdersAppCon");
             MySqlDataReader myReader;
@@ -175,157 +190,54 @@ namespace Barber.Controllers
         public JsonResult CheckTime(int sumTime, string date)
         {
 
-            string query = @"
-             SELECT * FROM barbershop.order INNER JOIN service 
-                                on service.id=barbershop.order.serviceId WHERE date=@date;
-            ";
-            string query2 = @" SELECT * FROM place;";
+          
             string time1 = " ";
-           
+
             string hour;
             string minute;
             int sumTimeMinute = 0;
             Dictionary<string, List<List<int>>> dictionary = new Dictionary<string, List<List<int>>>();
-            // List<List<int>> resultList = new List<List<int>>();
-            // List<List<int>> fullresultList = new List<List<int>>();
+            Dictionary<string, List<List<int>>> dictionary2 = new Dictionary<string, List<List<int>>>();
+           
             SortedSet<int> resultSet = new SortedSet<int>();
-            bool k = true; 
-            DataTable table = new DataTable();
-            DataTable table2 = new DataTable();
-            string sqlDataSource = _configuration.GetConnectionString("OrdersAppCon");
-            MySqlDataReader myReader;
-            using (MySqlConnection mycon = new MySqlConnection(sqlDataSource))
-            {
-                mycon.Open();
-                using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
+            bool k = true;
+           
+            Console.WriteLine(sumTime + "  --  " + date);
+            dictionary2.Append(ApiHelper.DictionaryFill(dictionary, date, _configuration));
+                foreach (var outlist1 in dictionary2.Keys)
                 {
-                   // Console.WriteLine("sumTime  " + sumTime);
-                    myCommand.Parameters.AddWithValue("@date", date);
-                    myReader = myCommand.ExecuteReader();
-                    table.Load(myReader);
-                  
-                    myReader.Close();                   
+                    Console.WriteLine(";;;Key: {0}", outlist1);
+                    foreach (var outlist2 in dictionary2[outlist1])
+                    {
+                        Console.WriteLine("... Value: {0},{1}",
+                      outlist2[0], outlist2[1]);
+                    }
                 }
-                using (MySqlCommand myCommand = new MySqlCommand(query2, mycon))
+                foreach (var outlist1 in dictionary2.Keys)
                 {
-                   
-                    myReader = myCommand.ExecuteReader();
-                    table2.Load(myReader);
-
-                    myReader.Close();
-                    mycon.Close();
-                   // Console.WriteLine( (table2.Rows[0]["id"]).ToString());
-                }
-                for(int i=0;i< table2.Rows.Count; i++)
-                {
-                    dictionary[table2.Rows[i]["id"].ToString()] = new List<List<int>> ();
-                    List<int> start = new List<int>();
-                    start.Add(0);
-                    start.Add(540);
-                    List<int> end = new List<int>();
-                    end.Add(1080);
-                    end.Add(0);
-                    dictionary[table2.Rows[i]["id"].ToString()].Add(start);
-                    dictionary[table2.Rows[i]["id"].ToString()].Add(end);
-                }
-
-                for (int i = 0; i < table.Rows.Count; i++)
-                {
-                    List<int> addToList = new List<int>();
-                    addToList.Add(ConvertTime(table.Rows[i]["time"].ToString()));
-                   // Console.WriteLine("time to make:"+ table.Rows[i]["timeToMake"].ToString());
-                    addToList.Add(ConvertTime(table.Rows[i]["time"].ToString())+ ConvertTime(table.Rows[i]["timeToMake"].ToString()));
-                    dictionary[table.Rows[i]["placeId"].ToString()].Add(addToList);
-
-                }   
-                dictionary = dictionary
-                    .OrderBy(d => d.Key)
-                       .ToDictionary(
-                          d => d.Key,
-                      d => (List<List<int>>)d.Value.OrderBy(v => v[0]).ToList());
-               
-                //foreach (var outlist1 in dictionary.Keys)
-                //{
-                //    Console.WriteLine("Key: {0}", outlist1);
-                //    foreach (var outlist2 in dictionary[outlist1])
-                //    {
-                //        Console.WriteLine(" Value: {0},{1}",
-                //      outlist2[0], outlist2[1]);
-                //    }
-                //}
-                foreach (var outlist1 in dictionary.Keys)
-                {
-                  //  Console.WriteLine("Key: {0}", outlist1);
-                 //   Console.WriteLine("fgg " + dictionary[outlist1].Count);
-                   
-                    for (int i = 0; i < dictionary[outlist1].Count-1; i++)
+                 
+                    for (int i = 0; i < dictionary2[outlist1].Count - 1; i++)
                     {
 
-                        if (dictionary[outlist1][i][1] != dictionary[outlist1][i + 1][1])
+                        if (dictionary2[outlist1][i][1] != dictionary2[outlist1][i + 1][1])
                         {
-                           // Console.WriteLine(" Value: {0}-{1}",
-                           //         dictionary[outlist1][i][1], dictionary[outlist1][i + 1][0]);
+                           
 
-
-                            if (dictionary[outlist1][i][1] + (int)sumTime<= dictionary[outlist1][i + 1][0])
+                            if (dictionary2[outlist1][i][1] + (int)sumTime <= dictionary2[outlist1][i + 1][0])
                             {
 
-                                //List<int> shortList = new List<int>();
-                                //shortList.Add(dictionary[outlist1][i][1]);
-                                //shortList.Add(dictionary[outlist1][i + 1][0]);
-                                //resultList.Add(shortList);
-                              
-                                InsertTime(dictionary[outlist1][i][1], dictionary[outlist1][i + 1][0], sumTime, resultSet);
+                          
+                            ApiHelper.InsertTime(dictionary2[outlist1][i][1], dictionary2[outlist1][i + 1][0], sumTime, resultSet);
 
                             }
                         }
-                            
-                    }
+
                     
-                    
+
+
 
                 }
-             
-               // Console.WriteLine("list  " + String.Join(",", resultSet));
-                //for (int i = 0; i < resultList.Count ; i++)
-                //{
-                //    Console.WriteLine(" Rseult List" + resultList[i][0] + "---" + resultList[i][1]);
-                   
-
-                //}
-                //int smin=0, emax=0;
-                //List<int> short2List = new List<int>();
-                //for (int i = 0; i < resultList.Count-1; i++)
-                //{
-                //     smin = resultList[i][0];
-                //     emax = resultList[i][1];
-                //    if (smin >= resultList[i + 1][0] && emax <= resultList[i + 1][1])
-                //    {
-                //        smin = resultList[i + 1][0];
-                //        emax = resultList[i + 1][1];
-                //        Console.WriteLine("u"+ smin + "   "+ emax );
-
-
-                //    }
-                //    else
-                //    {
-                //        Console.WriteLine("Fuuuuuu");
-                //        short2List.Add(resultList[i][0]);
-                //        short2List.Add(resultList[i][1]);
-                //    }
-                   
-                  
-
-                //}
-                //Console.WriteLine("qq " + smin + "   " + emax);
-                //short2List.Add(smin);
-                //short2List.Add(emax);
-                //fullresultList.Add(short2List);
-                //for (int i = 0; i < fullresultList.Count; i++)
-                //{
-                //    Console.WriteLine("Fq");
-                //    Console.WriteLine("Full Result List" + fullresultList[i][0] + "---" + fullresultList[i][1]);
-                //}
+            
             }
 
                 return new JsonResult(resultSet);
@@ -333,28 +245,9 @@ namespace Barber.Controllers
 
 
         }
+      
+      
 
-        public static int ConvertTime(string time)
-        {
-            string hour;
-            string minute;
-            string sumTimeMinute;
-            hour = time.Split(":")[0];
-            minute = time.Split(":")[1];
-            sumTimeMinute = ((Int32.Parse(hour) * 60) + Int32.Parse(minute)).ToString();
-            return (Int32.Parse(sumTimeMinute));
-        }
-     
-        public static SortedSet<int> InsertTime(int begin, int end, int sum, SortedSet<int> resultSet)
-        {
-            double h = Math.Ceiling((double)(begin / 30));
-            begin = (int)h*30;
-            for (int i= begin; i+sum<=end; i = i + 30)
-            {
-               
-                resultSet.Add(i);
-            }
-            return resultSet;
-        }
+        
     }
 }
