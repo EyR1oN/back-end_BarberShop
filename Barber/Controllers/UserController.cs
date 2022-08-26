@@ -200,7 +200,7 @@ namespace Barber.Controllers
             }
             if (table.Rows.Count == 0)
             {
-                return new JsonResult("User not exists");
+                return new JsonResult("Error");
             }
 
             if (Password.VerifyPassword(table.Rows[0]["password"].ToString(), password))
@@ -209,9 +209,10 @@ namespace Barber.Controllers
             }
             else
             {
-                return new JsonResult("Incorrect password");
+                return new JsonResult("Error");
             }
 
+           
         }
 
     }
